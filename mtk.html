@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survei Kebiasaan Belajar</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #fff4e9;
+    color: #493522;
+    margin: 0;
+    padding: 20px;
+}
+.container {
+    max-width: 750px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+}
+h1 { color: #d45b12; }
+.panel {
+    background: #fff7ef;
+    padding: 18px;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+}
+button {
+    background: #e66a18;
+    color: white;
+    padding: 11px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 12px;
+}
+.chart {
+    background: #eee;
+    height: 20px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+.bar {
+    height: 100%;
+    width: 0%;
+    background: #e66a18;
+}
+.row {
+    margin: 15px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>MATEMATIKA</h1>
+    <h2>Survei Kebiasaan Belajar</h2>
+
+    <p>
+    Mengumpulkan data kebiasaan belajar teman sekelas,
+    menyajikannya dalam grafik, dan membuat kesimpulan.
+    </p>
+
+    <div class="panel">
+
+        <h3>Masukkan Data Responden</h3>
+
+        <label>Nama atau Inisial:</label>
+
+        <input type="text" id="nama"
+        placeholder="Contoh: Responden 1">
+
+        <label>Kebiasaan Belajar:</label>
+
+        <select id="kebiasaan">
+            <option value="teratur">
+                Belajar teratur setiap hari
+            </option>
+
+            <option value="ujian">
+                Belajar menjelang ujian
+            </option>
+
+            <option value="tidak">
+                Belajar tidak tentu
+            </option>
+        </select>
+
+        <button onclick="tambahData()">
+            Tambah Data
+        </button>
+
+        <p id="pesan"></p>
+
+    </div>
+
+    <div class="panel">
+
+        <h3>Hasil Survei</h3>
+
+        <p id="total">Jumlah Responden: 0</p>
+
+        <div class="row">
+            <p>Belajar Teratur: <span id="jumlah1">0</span></p>
+            <div class="chart">
+                <div class="bar" id="bar1"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <p>Menjelang Ujian: <span id="jumlah2">0</span></p>
+            <div class="chart">
+                <div class="bar" id="bar2"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <p>Belajar Tidak Tentu: <span id="jumlah3">0</span></p>
+            <div class="chart">
+                <div class="bar" id="bar3"></div>
+            </div>
+        </div>
+
+        <h3>Kesimpulan</h3>
+
+        <p id="kesimpulan">
+            Masukkan data untuk melihat kesimpulan.
+        </p>
+
+        <button onclick="hapusData()">
+            Hapus Semua Data
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+let data = [];
+
+function tambahData() {
+
+    let nama = document.getElementById("nama").value.trim();
+
+    let kebiasaan = document.getElementById("kebiasaan").value;
+
+    if (nama === "") {
+        document.getElementById("pesan").textContent =
+        "Masukkan nama responden terlebih dahulu!";
+        return;
+    }
+
+    data.push({
+        nama: nama,
+        kebiasaan: kebiasaan
+    });
+
+    document.getElementById("nama").value = "";
+
+    document.getElementById("pesan").textContent =
+    "Data berhasil ditambahkan!";
+
+    tampilkanData();
+}
+
+function tampilkanData() {
+
+    let teratur = data.filter(x => x.kebiasaan === "teratur").length;
+    let ujian = data.filter(x => x.kebiasaan === "ujian").length;
+    let tidak = data.filter(x => x.kebiasaan === "tidak").length;
+
+    let total = data.length;
+
+    document.getElementById("total").textContent =
+    "Jumlah Responden: " + total;
+
+    document.getElementById("jumlah1").textContent = teratur;
+    document.getElementById("jumlah2").textContent = ujian;
+    document.getElementById("jumlah3").textContent = tidak;
+
+    document.getElementById("bar1").style.width =
+    (total ? teratur / total * 100 : 0) + "%";
+
+    document.getElementById("bar2").style.width =
+    (total ? ujian / total * 100 : 0) + "%";
+
+    document.getElementById("bar3").style.width =
+    (total ? tidak / total * 100 : 0) + "%";
+
+    if (total === 0) {
+        document.getElementById("kesimpulan").textContent =
+        "Masukkan data untuk melihat kesimpulan.";
+        return;
+    }
+
+    let hasil = [
+        ["Belajar teratur", teratur],
+        ["Belajar menjelang ujian", ujian],
+        ["Belajar tidak tentu", tidak]
+    ];
+
+    hasil.sort((a, b) => b[1] - a[1]);
+
+    document.getElementById("kesimpulan").textContent =
+    "Kebiasaan belajar terbanyak adalah " +
+    hasil[0][0] + " dengan jumlah " +
+    hasil[0][1] + " dari " + total + " responden.";
+}
+
+function hapusData() {
+    data = [];
+    document.getElementById("pesan").textContent =
+    "Semua data telah dihapus.";
+    tampilkanData();
+}
+</script>
+
+</body>
+</html>
